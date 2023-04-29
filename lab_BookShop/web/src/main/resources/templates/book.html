@@ -1,0 +1,68 @@
+<div xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+    <section class="jumbotron text-center">
+        <div class="container">
+            <h1 class="jumbotron-heading">BOOK SHOP</h1>
+            <h3 class="jumbotron-heading">All books</h3>
+        </div>
+    </section>
+    <div class="container mb-4">
+        <div class="row">
+            <div class="col-12" th:if="${books.size() > 0}">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th scope="col">Book name</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Author</th>
+                            <th scope="col">Available Copies</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="book : ${books}" class="book">
+                            <td th:text="${book.getName()}"></td>
+                            <td th:text="${book.getCategory()}"></td>
+                            <td th:text="${book.getAuthor() != null}
+                            ? ${book.getAuthor().getName()} : 'No Author'"></td>
+                            <td th:text="${book.getAvailableCopies()}"></td>
+                            <td class="text-right">
+                                <th:block sec:authorize="hasRole('ROLE_LIBRARIAN')">
+                                    <form th:action="@{'/delete/{id}' (id=${book.getId()})}"
+                                          th:method="DELETE">
+                                        <button type="submit"
+                                                class="btn btn-sm btn-danger ">
+                                            <i class="fa fa-trash">Delete</i>
+                                        </button>
+                                    </form>
+                                </th:block>
+                                <th:block sec:authorize="hasRole('ROLE_LIBRARIAN')">
+                                    <a th:href="@{'/edit-form/{id}' (id=${book.getId()})}"
+                                       class="btn btn-sm btn-info">
+                                        <i class="fa fa-trash">Edit</i>
+                                    </a>
+                                </th:block>
+                                <th:block sec:authorize="hasRole('ROLE_LIBRARIAN')">
+                                    <form th:action="@{'/taken/{id}' (id=${book.getId()})}" th:method="POST">
+                                        <button th:if="${book.availableCopies>0}" type="submit" class="like-item">Mark As Taken</button>
+                                    </form >
+                                </th:block>
+
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col mb-3">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12" sec:authorize="hasRole('ROLE_LIBRARIAN')">
+                        <a href="/add-form" class="btn btn-block btn-dark add-book-btn">
+                            Add new book
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
